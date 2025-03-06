@@ -95,3 +95,65 @@ INNER JOIN `data_147` AS `data_147`
     or ((data_147.active   is NULL )) ))
 ORDER BY data_147.field_3484 DESC
 Limit 1
+
+--most recent wage__________________________________________________
+ IF( 1 = 1 , (SELECT data_150.field_2999   
+ FROM `data_150`    
+ JOIN `documents` AS `doc`    
+ ON ((doc.id   = data_150.document_id   )) 
+    and ((data_150.active   = 1 ))    
+ WHERE ((doc.parent_id   = data_149.document_id   ))
+    and ((data_152.field_3258 LIKE( '%Community Inclusion%' )))
+    and ((data_152.field_3015   
+    between (STR_TO_DATE( LEFT( [column]  , INSTR( [column]  , '|')  - 1 ) , '%Y-%m-%d') ) 
+    and (STR_TO_DATE( RIGHT( [column]  , INSTR( [column]  , '|')  - 1 ) , '%Y-%m-%d') )  ))  ), '')
+
+-- users current role _____________________________________________________________________
+SELECT GROUP_CONCAT( DISTINCT rol.role_name  SEPARATOR '|')
+FROM `links` AS `lnk`   
+JOIN `data_6` AS `data_6`    
+ON ((((((((data_6.document_id   = lnk.link_from_id   )) 
+    and ((lnk.field_id   = 49 )) )) 
+    and ((lnk.active   = 1 )) )) 
+    and ((lnk.state   = 1 )) )) 
+    and ((data_6.active   = 1 ))    
+JOIN `documents` AS `doc`    
+    ON doc.id   = data_6.document_id      
+JOIN `data_5` AS `data_5`    
+    ON ((data_5.document_id   = doc.parent_id   )) 
+    and ((data_5.active   = 1 ))    
+JOIN `data_4` AS `data_4`    
+    ON ((data_4.document_id   = lnk.link_to_id   )) 
+    and ((data_4.active   = 1 ))    
+JOIN (SELECT DISTINCT permission_set_id  , role_id  , rol.name AS `role_name`   
+FROM `permissions` AS `per`   
+JOIN `roles` AS `rol`    
+    ON ((rol.id   = per.role_id   )) 
+    and ((rol.active   = 1 ))    
+WHERE permission_set_id   <> 0  ) AS `rol`  
+    ON rol.permission_set_id   = data_6.document_id
+
+-- get user email from user info______________________________________________________________
+SELECT data_4.field_27
+FROM `links` AS `lnk`   
+JOIN `data_6` AS `data_6`    
+ON ((((((((data_6.document_id   = lnk.link_from_id   )) 
+    and ((lnk.field_id   = 49 )) )) 
+    and ((lnk.active   = 1 )) )) 
+    and ((lnk.state   = 1 )) )) 
+    and ((data_6.active   = 1 ))    
+JOIN `documents` AS `doc`    
+    ON doc.id   = data_6.document_id      
+JOIN `data_5` AS `data_5`    
+    ON ((data_5.document_id   = doc.parent_id   )) 
+    and ((data_5.active   = 1 ))    
+JOIN `data_4` AS `data_4`    
+    ON ((data_4.document_id   = lnk.link_to_id   )) 
+    and ((data_4.active   = 1 ))    
+JOIN (SELECT DISTINCT permission_set_id  , role_id  , rol.name AS `role_name`   
+FROM `permissions` AS `per`   
+JOIN `roles` AS `rol`    
+    ON ((rol.id   = per.role_id   )) 
+    and ((rol.active   = 1 ))    
+WHERE permission_set_id   <> 0  ) AS `rol`  
+    ON rol.permission_set_id   = data_6.document_id

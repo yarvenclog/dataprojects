@@ -48,3 +48,33 @@ WHERE ((doc.parent_id   = data_144.document_id   ))
     < (STR_TO_DATE( RIGHT( [column]  , INSTR( [column]  , '|')  - 1 ) , '%Y-%m-%d') )  ))
     and ((((data_145.field_2918 = '0000-00-00')) 
         or ((data_145.field_2918 > (STR_TO_DATE( LEFT( [column]  , INSTR( [column]  , '|')  - 1 ) , '%Y-%m-%d') )))))  ), '')
+
+-- count active services __________________________________________________________________________
+ IF( 1 = 1 , (
+    SELECT COUNT( DISTINCT data_147.document_id  )   
+    FROM `data_147`    
+    JOIN `documents` AS `doc`   
+        ON ((doc.id   = data_147.document_id   )) 
+        and ((data_147.active   = 1 ))    
+    WHERE ((((((doc.parent_id   = data_144.document_id   )) 
+        and ((data_147.field_3470   = 'DDA Services' )) )) 
+        and ((data_147.field_2938   < STR_TO_DATE( RIGHT( [column]  , INSTR( [column]  , '|')  - 1 ) , '%Y-%m-%d')  )) )) 
+        and ((((data_147.field_2937   = '0000-00-00' )) 
+        or ((data_147.field_2937   > STR_TO_DATE( LEFT( [column]  , INSTR( [column]  , '|')  - 1 ) , '%Y-%m-%d')  )) ))  ), '')
+
+-- get date for service_______________________________________________________________________________
+IF(
+    1 = 1,
+    (
+        SELECT data_147.field_2938
+        FROM `data_147`
+        JOIN `documents` AS `doc`
+            ON doc.id = data_147.document_id 
+            AND data_147.active = 1
+        WHERE doc.parent_id = data_144.document_id
+            AND data_147.field_3470 = 'Job Development'
+            AND data_147.field_2938 BETWEEN 
+                STR_TO_DATE(LEFT([column], INSTR([column], '|') - 1), '%Y-%m-%d')
+                AND STR_TO_DATE(RIGHT([column], LENGTH([column]) - INSTR([column], '|')), '%Y-%m-%d')
+
+    
